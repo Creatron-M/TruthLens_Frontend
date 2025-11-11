@@ -18,8 +18,7 @@ export interface SystemStatus {
   error?: string;
 }
 
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_FASTAPI_URL || "http://localhost:8000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || "https://truthlens-backend-vj37.onrender.com";
 
 export function useSystemStatus(refreshInterval = 30000) {
   const [status, setStatus] = useState<SystemStatus>({

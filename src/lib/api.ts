@@ -9,10 +9,7 @@ import type {
   CustomQueryResponse,
 } from "../types/oracle";
 
-const API_BASE_URL =
-  typeof window !== "undefined"
-    ? "http://localhost:8000" // Direct connection for testing
-    : process.env.NEXT_PUBLIC_FASTAPI_URL || "http://localhost:8000"; // Direct URL for SSR
+const API_BASE_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || "https://truthlens-backend-vj37.onrender.com"
 
 const api = axios.create({
   baseURL: API_BASE_URL,
