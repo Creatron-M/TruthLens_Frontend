@@ -17,9 +17,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [effectiveTheme, setEffectiveTheme] = useState<"light" | "dark">(
     "light"
   );
+  const [mounted, setMounted] = useState(false);
 
   // Load theme from localStorage on mount
   useEffect(() => {
+    setMounted(true);
     const savedTheme = localStorage.getItem("truthlens-theme") as Theme;
     if (savedTheme) {
       setTheme(savedTheme);
@@ -28,6 +30,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Update effective theme based on theme setting and system preference
   useEffect(() => {
+    if (!mounted) return;
     const updateEffectiveTheme = () => {
       let newEffectiveTheme: "light" | "dark";
 
@@ -68,6 +71,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("truthlens-theme", newTheme);
   };
 
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return <div className="light">{children}</div>;
+  }
+
   return (
     <ThemeContext.Provider
       value={{
@@ -84,7 +92,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    return {
+      theme: "light" as Theme,
+      setTheme: () => {},
+      effectiveTheme: "light" as "light" | "dark"
+    };
   }
   return context;
 }
