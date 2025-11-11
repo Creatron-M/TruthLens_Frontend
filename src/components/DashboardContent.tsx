@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { TruthLensWidget } from "./TruthLensWidget";
 import { MarketGrid } from "./MarketGrid";
 import { AIStatusPanel } from "./AIStatusPanel";
-import { SystemHealthPanel } from "./SystemHealthPanel";
+
 import { marketService } from "../lib/api";
 import { MarketData } from "../types/oracle";
 import { useSystemStatus } from "../hooks/useSystemStatus";
