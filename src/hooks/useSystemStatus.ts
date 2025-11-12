@@ -18,7 +18,7 @@ export interface SystemStatus {
   error?: string;
 }
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || "https://truthlens-backend-vj37.onrender.com";
+import { getSystemHealth } from "../lib/api";
 
 export function useSystemStatus(refreshInterval = 30000) {
   const [status, setStatus] = useState<SystemStatus>({
@@ -34,31 +34,8 @@ export function useSystemStatus(refreshInterval = 30000) {
 
   const checkHealth = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/health`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Add timeout to prevent hanging requests
-        signal: AbortSignal.timeout(10000),
-      });
-
-      if (response.ok) {
-        const healthData = await response.json();
-        setStatus(healthData);
-      } else {
-        setStatus({
-          status: "unhealthy",
-          timestamp: Date.now(),
-          services: {
-            api: "degraded",
-            markets: "offline",
-            oracle: "offline",
-            analysis: "offline",
-          },
-          error: `HTTP ${response.status}`,
-        });
-      }
+      const healthData = await getSystemHealth();
+      setStatus(healthData);
     } catch (error) {
       console.error("Health check failed:", error);
       setStatus({

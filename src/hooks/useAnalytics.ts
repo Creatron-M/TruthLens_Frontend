@@ -19,7 +19,7 @@ export interface AnalyticsData {
   }>;
 }
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_FASTAPI_URL || "https://truthlens-backend-vj37.onrender.com";
+import { getSystemAnalytics } from "../lib/api";
 
 export function useAnalytics(refreshInterval = 60000) {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
@@ -29,21 +29,8 @@ export function useAnalytics(refreshInterval = 60000) {
   const fetchAnalytics = async () => {
     try {
       setError(null);
-      const response = await fetch(`${BACKEND_URL}/analytics`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Add timeout to prevent hanging requests
-        signal: AbortSignal.timeout(10000),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setAnalytics(data);
-      } else {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      const data = await getSystemAnalytics();
+      setAnalytics(data);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to fetch analytics"
